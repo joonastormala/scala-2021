@@ -1,0 +1,12 @@
+.bloop
+.metals
+.vscode
+include
+notes
+plugins
+target
+build.sbt
+project
+*.test.*
+*.txt
+*.png

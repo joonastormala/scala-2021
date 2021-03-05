@@ -85,14 +85,58 @@
  */
 
 package object longestIncreasingSubsequence {
-
+  import scala.collection.mutable.Buffer
   /** Returns a longest increasing subsequence in the sequence s.
    *  If there are multiple such subsequences, any subsequence will do. */
 
+  // model solution
   def longestIncreasingSubsequence(s: Seq[Int]): Seq[Int] = {
     require(s.length > 0)
-    ???
+    val lis = new Array[Int](s.length) // Array which records LIS length values
+    val par = new Array[Int](s.length)
+    for(i <- 0 until s.length){
+      lis(i) = 1
+      par(i) = s.length
+      for(j <- 0 until i){
+        if(s(j)<s(i) && lis(i) < lis(j) + 1){
+          lis(i) = lis(j)+1
+          par(i) = j
+        }
+      }
+    }
+
+    /* finds the index of max value in lis.
+    *  could also be done with a loop where if(lis(i)>lis(m)) -> m = i.
+    */
+    var m = lis.zipWithIndex.maxBy(_._1)._2
+    val ret = new Array[Int](lis(m))
+    var i = lis(m)-1
+    while(i >= 0){
+      ret(i) = s(m)
+      m = par(m)
+      i -= 1
+    }
+    ret
   }
+
+  // Alternative if done with buffers
+  // def longestIncreasingSubsequence(s: Seq[Int]): Seq[Int] = {   
+  //   var lis = Buffer.fill[Int](s.length)(1)
+  //   var par = Buffer.fill[Int](s.length, 0)(0)
+  //   for(i <- 0 until s.length){
+  //     var best= 0;
+  //     for(j <- 0 until i){
+  //       if(s(j) < s(i) && best <= lis(j)){
+  //         lis(i) = lis(j) + 1
+  //         par(i).clear()
+  //         par(j).copyToBuffer(par(i))
+  //         best = lis(j)
+  //       }
+  //     }
+  //     par(i).append(s(i))
+  //   }
+  //   par((lis.zipWithIndex.maxBy(_._1))._2)
+  // }
 }
 
 

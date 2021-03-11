@@ -29,9 +29,9 @@ package object floatCaveat {
    * (x+y)+z == 1.0 and x+(y+z) == 0.0
    *
    */
-  val x: Double = ???
-  val y: Double = ???
-  val z: Double = ???
+  val x: Double = Math.pow(2,64)
+  val y: Double = -x
+  val z: Double = 1.0
   
 }
 

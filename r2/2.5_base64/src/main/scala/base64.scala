@@ -79,7 +79,10 @@ package object base64 {
    *
     Make sure that you take only the least significant 8 bits of each argument P,Q,R into account.
    */
-  def to24Bits(p: Int, q: Int, r: Int): Int = ???
+  def to24Bits(p: Int, q: Int, r: Int): Int = {
+    var (a,b,c) = (p&0xFF,q&0xFF,r&0xFF)
+    ((a) << 16) + ((b) << 8)+ c
+  }
   
   /* 
    * Task 2: 
@@ -93,7 +96,8 @@ package object base64 {
    * Int in each case): r(0) == X, r(1) == Y, r(2) == Z, and r(3) == W.
    *
    */
-  def to6BitWords(w: Int): Array[Int] = ???
+  def to6BitWords(w: Int): Array[Int] = Array((w >> 18 & 63), (w>>12 & 63), (w>>6&63), w&63)
+
   
   /* 
    * Task 3: 
@@ -114,7 +118,7 @@ package object base64 {
   def restrictedEncode(b: Array[Byte]): String = {
     require(b.length % 3 == 0)
     // ... your solution starts here ...
-    ???
+    new String(b.grouped(3).toArray.map(x => to6BitWords( to24Bits(x(0),x(1),x(2)))).flatMap(x => x.map(B64(_))))
     // ... and ends here ...
   }
   
@@ -125,8 +129,13 @@ package object base64 {
    * a multiple of 3.
    *
    */
-  def encode(b: Array[Byte]): String = ???
-  
+  def encode(b: Array[Byte]): String = {
+    b.length % 3 match {
+      case 0 => restrictedEncode(b)
+      case 1 => restrictedEncode(b:+ 0.toByte :+ 0.toByte).dropRight(2) + "=="
+      case _ => restrictedEncode(b :+ 0.toByte).dropRight(1) + "="
+    }
+  }
 }
 
 

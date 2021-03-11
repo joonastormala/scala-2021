@@ -97,7 +97,13 @@ package object parity {
    *
    */
 
-  def extend(p: Long): Long = ???
+  def extend(p: Long): Long = {
+    var x = p & ~(1L << 63)
+    var c = 0
+    (0 until 64).foreach(i => if( ((x >> i) & 1) == 1 ) c += 1)
+    if(c % 2 == 1) x |= (1L << 63)
+    x
+  }
   
   /*
    * Task 2:
@@ -113,7 +119,13 @@ package object parity {
    *
    */
 
-  def ok(x: Long): Boolean = ???
+  def ok(x: Long): Boolean = {
+    var c, pB2 = 0
+    var pB1 = (x >> 63) & 1
+    (0 until 64).foreach(i => if( (( (x<<1) >> i) & 1) == 1 ) c += 1)
+    if (c % 2 == 1) pB2 = 1
+    pB1 == pB2
+  }
   
 }
 
